@@ -3,9 +3,7 @@
 #3. Leitura e validação do token vindo do cookie
 
 from datetime import datetime, timedelta, timezone
-from http.client import HTTPException
-from alembic.util import status
-from fastapi import requests
+from fastapi import Request, requests, HTTPException, status
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from dotenv import load_dotenv
@@ -27,8 +25,8 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 def hash_senha(senha: str):
     return pwd_context.hash(senha)
 
-    def verificar_senha(senha: str, senha_hash: str):
-        return pwd_context.verify(senha, senha_hash)
+def verificar_senha(senha: str, senha_hash: str):
+    return pwd_context.verify(senha, senha_hash)
 
 # Funções do token
 def criar_token(data: dict):
@@ -47,7 +45,7 @@ def decodificar_token(token: str):
     return payload
     # dependenciais do fastapi para lidar com erros de autenticação
 
-def get_usuario_logado(request: requests.Request):
+def get_usuario_logado(request: Request):
     token = request.cookies.get("access_token")
 
     if not token:
@@ -68,3 +66,9 @@ def get_usuario_logado(request: requests.Request):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token de autenticação inválido"
         )
+    
+def get_usuario_opcional(request: Request):
+    try:
+        return get_usuario_logado(request)
+    except HTTPException:
+        return None
