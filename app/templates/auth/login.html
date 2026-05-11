@@ -8,20 +8,26 @@
 <body>
     <h1>Entrar no sistema</h1>
 
+
+
     <form action="/auth/login" method="post">
-        E-mail: <input type="email" name="email" required>
-        <br><br>
-        Senha: <input type="password" name="senha" minlength="4">
-        <br><br>
 
-        {% if erro %}
-            <p style="color: red;">{{ erro }}</p>
-        {% endif %}
+    {% if request.query_params.get("cadastro") == "ok" %}
+        <p style="color: green;">Cadastro realizado! Faça login</p>
+    {% endif %}
 
-        <button type="submit">Entrar</button>
-    </form>
+    E-mail: <input type="email" name="email" required>
+    <br><br>
+    Senha: <input type="password" name="senha">
+    <br><br>
 
-    <p>Não tem conta? <a href="/auth/cadastro">Cadastre-se</a></p>
+    {% if erro %}
+        <p style="color: red;">{{ erro }}</p>
+    {% endif %}
 
+    <button type="submit">Entrar</button>
+</form>
+
+<p>Não tem conta? <a href="/auth/cadastro">Cadastre-se</a></p>
 </body>
 </html>

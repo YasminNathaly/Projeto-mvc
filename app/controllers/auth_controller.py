@@ -1,3 +1,5 @@
+import email
+
 from fastapi import APIRouter, Depends, Request, Form, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -28,3 +30,35 @@ def tela_login(request: Request):
         "auth/login.html",
         {"request": request}
     )
+
+#Criar o usuário no banco - cadastrar usuario
+
+@router.post("/cadastro")
+def cadastrar_user(
+    request: Request,
+    nome: str = Form(...),
+    email: str = Form(...),
+    senha: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    
+    # Verificar se o email está cadastrado
+    user_existente = db.query(Usuario).filter(email=email).first()
+
+    if user_existente:
+        #Retorna o formulário com mensagem de erro
+        return templates.TemplateResponse(
+            request,
+            "auth/cadastro.html",
+            {"request": request, "erro": "Email já cadastrado"}
+        )
+    
+    #Criar o novo usuário com senha hash
+    novo_usuario = Usuario(
+        nome=nome,
+        email=email,
+        senha_hash=hash_senha(senha), #Nunca salva a senha pura no db
+)
+    
+    db.add(novo_usuario)
+    db.commit()
