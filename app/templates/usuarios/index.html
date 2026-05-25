@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuários — Sistema</title>
+    <style>
+        :root{--primary:#667eea;--accent:#764ba2}
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:Segoe UI, Tahoma, Geneva, Verdana, sans-serif;background:#f5f7fb;padding:24px}
+        .container{max-width:1100px;margin:0 auto}
+        header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+        .actions{display:flex;gap:12px}
+        .btn{padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:600;border:none;cursor:pointer}
+        .btn-primary{background:linear-gradient(90deg,var(--primary),var(--accent));color:#fff}
+        table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.06)}
+        thead{background:linear-gradient(90deg,var(--primary),var(--accent));color:#fff}
+        th,td{padding:14px 16px;text-align:left;border-bottom:1px solid #f0f0f0}
+        .status{padding:6px 10px;border-radius:999px;font-weight:700;font-size:13px}
+        .status.active{background:#e8f0ff;color:var(--primary)}
+        .status.inactive{background:#fff4f4;color:#c33}
+        .actions-cell{display:flex;gap:8px}
+        @media(max-width:720px){header{flex-direction:column;align-items:flex-start}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Usuários</h1>
+            <div class="actions">
+                <a href="/" class="btn">← Home</a>
+                <a href="/usuarios/novo" class="btn btn-primary">+ Novo usuário</a>
+            </div>
+        </header>
+
+        {% if request.query_params.get('criado') == 'ok' %}
+            <div style="background:#e6ffed;padding:10px;border-radius:8px;margin-bottom:12px">Usuário criado com sucesso!</div>
+        {% endif %}
+
+        {% if request.query_params.get('editado') == 'ok' %}
+            <div style="background:#e6ffed;padding:10px;border-radius:8px;margin-bottom:12px">Usuário atualizado com sucesso!</div>
+        {% endif %}
+
+        {% if request.query_params.get('erro') == 'autoproprio' %}
+            <div style="background:#fff0f0;padding:10px;border-radius:8px;margin-bottom:12px">Você não pode alterar seu próprio status.</div>
+        {% endif %}
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th style="width:120px">Função</th>
+                    <th style="width:120px">Status</th>
+                    <th style="width:220px">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in usuarios %}
+                <tr>
+                    <td>{{ u.nome }}</td>
+                    <td>{{ u.email }}</td>
+                    <td>{{ u.role }}</td>
+                    <td>
+                        {% if u.ativo %}
+                            <span class="status active">Ativo</span>
+                        {% else %}
+                            <span class="status inactive">Inativo</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="actions-cell">
+                            <a href="/usuarios/{{ u.id }}/editar" class="btn">Editar</a>
+
+                            <form action="/usuarios/{{ u.id }}/toggle-ativo" method="post" style="display:inline">
+                                <button type="submit" class="btn">{{ 'Desativar' if u.ativo else 'Ativar' }}</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+
+                {% if not usuarios %}
+                <tr>
+                    <td colspan="5" style="text-align:center;padding:28px 16px">Nenhum usuário cadastrado.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

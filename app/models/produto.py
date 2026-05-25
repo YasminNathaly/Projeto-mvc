@@ -18,3 +18,12 @@ class Produto(Base):
     categoria_id = Column(Integer, ForeignKey("categorias.id", ondelete= "SET NULL"), nullable=True)
 
     categoria = relationship("Categoria", back_populates="produtos")
+
+
+    #Método
+
+    def imagem_url(self):
+        if self.imagem_path:
+            return f"/static/{self.imagem_path}"
+        else:
+            return "/static/img/produto-placeholder.png"
