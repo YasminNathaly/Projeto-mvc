@@ -1,33 +1,121 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container{
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 350px;
+        }
+
+        h1{
+            text-align: center;
+            color: #003366;
+            margin-bottom: 25px;
+        }
+
+        label{
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input{
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        button{
+            width: 100%;
+            padding: 10px;
+            background: #003366;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover{
+            background: #0055aa;
+        }
+
+        .sucesso{
+            color: green;
+            text-align: center;
+        }
+
+        .erro{
+            color: red;
+            text-align: center;
+        }
+
+        .link{
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        a{
+            color: #003366;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover{
+            text-decoration: underline;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Entrar no sistema</h1>
+    <div class="container">
 
+        <h1>Entrar no Sistema</h1>
 
+        {% if request.query_params.get("cadastro") == "ok" %}
+            <p class="sucesso">Cadastro realizado com sucesso! Faça login.</p>
+        {% endif %}
 
-    <form action="/auth/login" method="post">
+        {% if erro %}
+            <p class="erro">{{ erro }}</p>
+        {% endif %}
 
-    {% if request.query_params.get("cadastro") == "ok" %}
-        <p style="color: green;">Cadastro realizado! Faça login</p>
-    {% endif %}
+        <form action="/auth/login" method="post">
 
-    E-mail: <input type="email" name="email" required>
-    <br><br>
-    Senha: <input type="password" name="senha">
-    <br><br>
+            <label>E-mail:</label>
+            <input type="email" name="email" required>
 
-    {% if erro %}
-        <p style="color: red;">{{ erro }}</p>
-    {% endif %}
+            <label>Senha:</label>
+            <input type="password" name="senha" required>
 
-    <button type="submit">Entrar</button>
-</form>
+            <button type="submit">Entrar</button>
 
-<p>Não tem conta? <a href="/auth/cadastro">Cadastre-se</a></p>
+        </form>
+
+        <p class="link">
+            Não tem conta?
+            <a href="/auth/cadastro">Cadastre-se</a>
+        </p>
+
+    </div>
 </body>
 </html>

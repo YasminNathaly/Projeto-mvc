@@ -106,7 +106,7 @@ def fazer_login(
 
     response.set_cookie(
     key="access_token",
-        value=token,
+        value=token_data,
         httponly=True,
         max_age=3600, # Expira em 1 hora (Em segundos)
         samesite="lax"
